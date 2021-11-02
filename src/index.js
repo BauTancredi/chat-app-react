@@ -4,4 +4,4 @@ import { ChatApp } from "./ChatApp";
 
 import "./index.css";
 
-ReactDOM.render((<ChatApp />).document.getElementById("root"));
+ReactDOM.render(<ChatApp />, document.getElementById("root"));
