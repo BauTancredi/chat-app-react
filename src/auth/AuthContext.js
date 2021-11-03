@@ -35,7 +35,31 @@ export const AuthProvider = ({ children }) => {
     return resp.ok;
   };
 
-  const register = (name, email, password) => {};
+  const register = async (name, email, password) => {
+    const resp = await fetchWithoutToken(
+      "login/new",
+      { name, email, password },
+      "POST"
+    );
+    console.log(resp);
+    if (resp.ok) {
+      localStorage.setItem("token", resp.token);
+      const { user } = resp;
+
+      setAuth({
+        uid: user.uid,
+        checking: false,
+        logged: true,
+        name: user.name,
+        email: user.email,
+      });
+
+      console.log("Registered!");
+      return true;
+    }
+
+    return resp.msg;
+  };
   const logout = () => {};
 
   const validateToken = useCallback(() => {}, []);
