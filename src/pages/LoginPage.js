@@ -1,9 +1,68 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import { AuthContext } from "../auth/AuthContext";
 
 export const LoginPage = () => {
+  const { login } = useContext(AuthContext);
+  const [form, setForm] = useState({
+    email: "test@test.com",
+    password: "123456",
+    rememberme: false,
+  });
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    if (email) {
+      setForm((form) => ({
+        ...form,
+        email,
+        rememberme: true,
+      }));
+    }
+  }, []);
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
+
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  const toggleCheck = () => {
+    setForm({
+      ...form,
+      rememberme: !form.rememberme,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    form.rememberme
+      ? localStorage.setItem("email", form.email)
+      : localStorage.removeItem("email");
+
+    const { email, password } = form;
+    const ok = await login(email, password);
+
+    if (!ok) {
+      Swal.fire("Error", "Verify user and password", "error");
+    }
+  };
+
+  const everythingOk = () => {
+    return form.email.length > 0 && form.password.length > 0 ? true : false;
+  };
+
   return (
-    <form className="login100-form validate-form flex-sb flex-w">
+    <form
+      className="login100-form validate-form flex-sb flex-w"
+      onSubmit={handleSubmit}
+    >
       <span className="login100-form-title mb-3">Chat - Ingreso</span>
 
       <div className="wrap-input100 validate-input mb-3">
@@ -12,6 +71,8 @@ export const LoginPage = () => {
           type="email"
           name="email"
           placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
         />
         <span className="focus-input100"></span>
       </div>
@@ -22,17 +83,21 @@ export const LoginPage = () => {
           type="password"
           name="password"
           placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
         />
         <span className="focus-input100"></span>
       </div>
 
       <div className="row mb-3">
-        <div className="col">
+        <div className="col" onClick={() => toggleCheck()}>
           <input
             className="input-checkbox100"
             id="ckb1"
             type="checkbox"
-            name="remember-me"
+            name="rememberme"
+            checked={form.rememberme}
+            readOnly
           />
           <label className="label-checkbox100">Recordarme</label>
         </div>
@@ -45,7 +110,13 @@ export const LoginPage = () => {
       </div>
 
       <div className="container-login100-form-btn m-t-17">
-        <button className="login100-form-btn">Ingresar</button>
+        <button
+          className="login100-form-btn"
+          disabled={!everythingOk()}
+          type="submit"
+        >
+          Ingresar
+        </button>
       </div>
     </form>
   );
