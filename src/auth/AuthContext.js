@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback } from "react";
-import { fetchWithoutToken } from "../helpers/fetch";
+import { fetchWithoutToken, fetchWithToken } from "../helpers/fetch";
 
 export const AuthContext = createContext();
 
@@ -60,9 +60,52 @@ export const AuthProvider = ({ children }) => {
 
     return resp.msg;
   };
+
   const logout = () => {};
 
-  const validateToken = useCallback(() => {}, []);
+  const validateToken = useCallback(async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setAuth({
+        uid: null,
+        checking: false,
+        logged: false,
+        name: null,
+        email: null,
+      });
+
+      return false;
+    }
+
+    const resp = await fetchWithToken("login/renew");
+
+    if (resp.ok) {
+      localStorage.setItem("token", resp.token);
+      const { user } = resp;
+
+      setAuth({
+        uid: user.uid,
+        checking: false,
+        logged: true,
+        name: user.name,
+        email: user.email,
+      });
+
+      console.log("Registered!");
+      return true;
+    } else {
+      setAuth({
+        uid: null,
+        checking: false,
+        logged: true,
+        name: null,
+        email: null,
+      });
+
+      return false;
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
