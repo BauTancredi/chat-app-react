@@ -28,8 +28,6 @@ export const AuthProvider = ({ children }) => {
         name: userDB.name,
         email: userDB.email,
       });
-
-      console.log("Authenicated!");
     }
 
     return resp.ok;
@@ -41,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       { name, email, password },
       "POST"
     );
-    console.log(resp);
+
     if (resp.ok) {
       localStorage.setItem("token", resp.token);
       const { user } = resp;
@@ -53,8 +51,6 @@ export const AuthProvider = ({ children }) => {
         name: user.name,
         email: user.email,
       });
-
-      console.log("Registered!");
       return true;
     }
 
@@ -96,7 +92,6 @@ export const AuthProvider = ({ children }) => {
         email: user.email,
       });
 
-      console.log("Registered!");
       return true;
     } else {
       setAuth({

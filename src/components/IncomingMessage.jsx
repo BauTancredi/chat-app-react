@@ -5,7 +5,7 @@ export const IncomingMessage = () => {
     <div className="incoming_msg">
       <div className="incoming_msg_img">
         <img
-          src="https://ptetutorials.com/images/user-profile.png"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMRBqTeY-dTImnv-0qS4j32of8dVtWelSEMw&usqp=CAU"
           alt="sunil"
         />
       </div>
