@@ -15,6 +15,33 @@ export const chatReducer = (state, action) => {
         activeChat: action.payload,
         messages: [],
       };
+    case types.newMessage:
+      if (
+        state.activeChat === action.payload.from ||
+        state.activeChat === action.payload.to
+      ) {
+        return {
+          ...state,
+          messages: [...state.messages, action.payload],
+        };
+      } else {
+        return state;
+      }
+
+    case types.loadMessages:
+      return {
+        ...state,
+        messages: action.payload,
+      };
+
+    case types.logout:
+      return {
+        uid: "",
+        activeChat: null,
+        messages: [],
+        users: [],
+      };
+
     default:
       return state;
   }
